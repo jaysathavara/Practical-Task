@@ -1,0 +1,51 @@
+<ng-container *ngIf="isOpen">
+  <div class="modal-backdrop fade show" (click)="cancel.emit()"></div>
+
+  <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+          <div class="modal-header">
+            <h5 class="modal-title">{{ task ? 'Edit task' : 'Add task' }}</h5>
+            <button type="button" class="btn-close" aria-label="Close" (click)="cancel.emit()"></button>
+          </div>
+
+          <div class="modal-body">
+            <div class="alert alert-danger" *ngIf="saveError">{{ saveError }}</div>
+
+            <div class="mb-3">
+              <label for="title" class="form-label">Title</label>
+              <input id="title" type="text" class="form-control" formControlName="title"
+                [class.is-invalid]="shouldShowError('title')" />
+              <div class="invalid-feedback" *ngIf="f.title.errors?.['required']">Title is required</div>
+              <div class="invalid-feedback" *ngIf="f.title.errors?.['minlength']">Minimum 5 characters</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="assignee" class="form-label">Assignee</label>
+              <input id="assignee" type="text" class="form-control" formControlName="assignee"
+                [class.is-invalid]="shouldShowError('assignee')" />
+              <div class="invalid-feedback" *ngIf="f.assignee.errors?.['required']">Assignee is required</div>
+            </div>
+
+            <div class="mb-1">
+              <label for="dueDate" class="form-label">Due date</label>
+              <input id="dueDate" type="date" class="form-control" formControlName="dueDate"
+                [min]="task ? null : minimumDate"
+                [class.is-invalid]="shouldShowError('dueDate')" />
+              <div class="invalid-feedback" *ngIf="f.dueDate.errors?.['required']">Due date is required</div>
+              <div class="invalid-feedback" *ngIf="f.dueDate.errors?.['pastDate']">Due date can't be in the past</div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="cancel.emit()">Cancel</button>
+            <button type="submit" class="btn btn-primary">{{ task ? 'Update' : 'Save' }}</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-container>
